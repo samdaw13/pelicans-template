@@ -1,0 +1,15 @@
+pre-commit:
+  parallel: true
+  commands:
+    frontend-lint:
+      root: "frontend/"
+      run: npm run lint
+    frontend-type-check:
+      root: "frontend/"
+      run: npm run type-check
+    backend-lint:
+      root: "backend/"
+      run: npm run lint
+    backend-type-check:
+      root: "backend/"
+      run: npm run type-check

@@ -1,14 +1,21 @@
 # Getting Started
 
-```
-cd frontend
-npm install
-npm run dev
-```
+Install dependencies (once per machine):
 
 ```
-cd backend
-npm install
-npm run dev
+brew install just lefthook
+```
+
+Then after cloning:
+
+```
+just setup
+```
+
+To run the services:
+
+```
+cd frontend && npm run dev
+cd backend && npm run dev
 ```
 
