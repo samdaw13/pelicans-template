@@ -1,53 +1,58 @@
-import { useState, useEffect } from 'react';
 import './App.css';
-import { env } from './environment';
-
-interface ApiResponse {
-  message: string;
-}
+import { useImageSlideshow } from './hooks/useImageSlideshow.ts';
 
 function App() {
-  const [message, setMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchMessage = async (): Promise<void> => {
-      try {
-        const response = await fetch(env.API_URL);
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: ApiResponse = await response.json();
-        setMessage(data.message);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'An unknown error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessage();
-  }, []);
+  const {
+    image,
+    isLoading,
+    isError,
+    isPlaying,
+    showNoMore,
+    onNext,
+    onPrevious,
+    onPlay,
+    onPause,
+  } = useImageSlideshow();
 
   return (
-    <>
-      <div className="card">
-        <h2>Backend Response:</h2>
-        {loading && <p>Loading...</p>}
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-        {message && (
-          <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#646cff' }}>
-            {message}
-          </p>
+    <div className="slideshow">
+      <h1>Pelicans</h1>
+
+      <div className="image-container">
+        {isLoading && <div className="status">Loading...</div>}
+        {isError && <div className="status error">Failed to load image. Please try again.</div>}
+        {image && !isLoading && (
+          <>
+            <img src={image.url} alt={image.alt} className="slideshow-image" />
+            <p className="credit">
+              Photo by{' '}
+              <a href={image.photographerUrl} target="_blank" rel="noreferrer">
+                {image.photographer}
+              </a>{' '}
+              on Unsplash
+            </p>
+          </>
         )}
       </div>
-      <p className="read-the-docs">
-        Fetching data from backend at {env.API_URL}
-      </p>
-    </>
+
+      {showNoMore && <p className="no-more">No more images!</p>}
+
+      <div className="controls">
+        <button onClick={onPrevious} disabled={isLoading}>
+          ← Previous
+        </button>
+        {isPlaying ? (
+          <button onClick={onPause}>Pause</button>
+        ) : (
+          <button onClick={onPlay} disabled={isLoading}>
+            Play
+          </button>
+        )}
+        <button onClick={onNext} disabled={isLoading}>
+          Next →
+        </button>
+      </div>
+    </div>
   );
 }
 

@@ -11,13 +11,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get an image by offset */
+        /** Get a random pelican image */
         get: {
             parameters: {
-                query?: {
-                    /** @description Image offset (0-indexed). Omit or use 0 for the initial image. */
-                    offset?: number | null;
-                };
+                query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
@@ -33,7 +30,7 @@ export interface paths {
                         "application/json": components["schemas"]["ImageResponse"];
                     };
                 };
-                /** @description No image found at this offset */
+                /** @description No image found */
                 404: {
                     headers: {
                         [name: string]: unknown;
@@ -71,8 +68,6 @@ export interface components {
              * @description URL to the photographer's Unsplash profile
              */
             photographerUrl: string;
-            /** @description Current image offset (0-indexed) */
-            offset: number;
         };
         ErrorResponse: {
             /** @description Error message */
