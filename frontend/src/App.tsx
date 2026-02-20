@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import { env } from './environment';
 
 interface ApiResponse {
   message: string;
 }
-
-const API_URL = 'http://localhost:3200';
 
 function App() {
   const [message, setMessage] = useState<string | null>(null);
@@ -15,7 +14,7 @@ function App() {
   useEffect(() => {
     const fetchMessage = async (): Promise<void> => {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(env.API_URL);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -46,7 +45,7 @@ function App() {
         )}
       </div>
       <p className="read-the-docs">
-        Fetching data from backend at {API_URL}
+        Fetching data from backend at {env.API_URL}
       </p>
     </>
   );
