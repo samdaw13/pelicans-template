@@ -9,7 +9,6 @@ export const ImageResponseSchema = z
     alt: z.string().openapi({ description: 'Alt text for the image' }),
     photographer: z.string().openapi({ description: 'Name of the photographer' }),
     photographerUrl: z.string().url().openapi({ description: "URL to the photographer's Unsplash profile" }),
-    offset: z.number().int().min(0).openapi({ description: 'Current image offset (0-indexed)' }),
   })
   .openapi('ImageResponse');
 
