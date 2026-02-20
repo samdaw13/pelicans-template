@@ -1,7 +1,8 @@
 import createClient from 'openapi-fetch';
 import type { paths } from '../api.gen.ts';
+import { env } from '../environment.ts';
 
-const client = createClient<paths>({ baseUrl: 'http://localhost:3200' });
+const client = createClient<paths>({ baseUrl: env.API_URL });
 
 export async function fetchImage() {
   const { data, error, response } = await client.GET('/images', {});
