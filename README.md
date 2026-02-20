@@ -89,8 +89,23 @@ The backend dev runner was switched from `ts-node` to `tsx`. `ts-node` has known
 
 ## What I'd do next with more time
 
-- Add a visual progress indicator during play (e.g. a countdown bar between advances)
-- Prefetch the next image in the background while the current one is displayed, so there's no loading flash on Next
-- Persist history to `sessionStorage` so navigation survives a page refresh
-- Expand the test suite: add a smoke test for the rendered UI (`App.test.tsx`), test the play/pause interval behavior with fake timers, and add backend route tests with a mocked Unsplash client
-- Add a `docker-compose.yml` for one-command startup
+- **Add a visual progress indicator during play** — e.g. a countdown bar between advances so the user knows when the next image is coming
+- **Prefetch the next image** in the background while the current one is displayed, eliminating the loading flash on Next
+- **Persist history to `sessionStorage`** so navigation survives a page refresh
+- **Add a `docker-compose.yml`** for one-command startup
+
+**Storybook for frontend development and integration testing**
+
+Add Storybook so UI components and states can be developed and reviewed without a running backend. Stories would cover every state the slideshow can be in: initial loading, image displayed, error, "No more images!", play mode. The MSW (Mock Service Worker) addon would intercept `GET /images` at the network level, so stories verify the full request/response cycle — correct URL, correct headers, correct parsing of the response — without hitting the real API. This also doubles as a visual regression suite.
+
+**Backend integration tests**
+
+Add a test suite (e.g. with `supertest`) that starts the Express app and exercises `GET /images` end-to-end, with the Unsplash `fetch` call mocked at the module level. This would verify: the route constructs the correct Unsplash URL and authorization header, correctly maps the Unsplash response shape to the API contract, returns 404 when Unsplash returns no results, and returns 502 on a failed upstream call. This is distinct from unit tests — it catches wiring bugs (wrong route registration, missing middleware, etc.) that unit tests miss.
+
+**Auto-generate the OpenAPI spec from route definitions**
+
+The current approach defines Zod schemas manually and registers them with `@asteasolutions/zod-to-openapi`. A better long-term approach would be a library that infers the spec directly from the router — such as `tsoa` (decorators on controller classes auto-generate both routes and the spec) or switching the framework to Hono with `@hono/zod-openapi` (built-in first-class support for Zod + OpenAPI with zero manual registration). Either eliminates the separate schema registration step and keeps the spec guaranteed in sync with the actual route handlers.
+
+**Handle Unsplash rate limit responses**
+
+The Unsplash demo tier allows 50 requests/hour. A 429 response from Unsplash currently surfaces as a generic 502 to the frontend. Instead the backend should detect the 429, return its own 429 with a `Retry-After` header, and the frontend should show a specific "Rate limit reached, try again in X seconds" message rather than a generic error.
