@@ -30,13 +30,13 @@ echo "UNSPLASH_ACCESS_KEY=your_key_here" > backend/.env
 
 Get a key by creating a free account at [unsplash.com/developers](https://unsplash.com/developers) and registering an application.
 
-**Frontend** — create `frontend/.env.local`:
+**Frontend** — optional, defaults to `http://localhost:3200`:
 
 ```bash
 echo "VITE_API_URL=http://localhost:3200" > frontend/.env.local
 ```
 
-The frontend validates env vars at startup via Zod (`src/environment.ts`) and will throw a clear error if any are missing or malformed.
+The frontend validates env vars at startup via Zod (`src/environment.ts`) and will throw a clear error if any are malformed.
 
 ## Running
 
